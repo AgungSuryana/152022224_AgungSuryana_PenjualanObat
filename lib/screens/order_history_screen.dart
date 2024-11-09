@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_bottom_navigation_bar.dart'; // Pastikan path ini sesuai dengan struktur proyek
 
+// ignore: use_key_in_widget_constructors
 class OrderHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Riwayat Pesanan')),
-      body: Center(child: Text('Riwayat pesanan Anda akan muncul di sini.')),
+      appBar: AppBar(title: const Text('Riwayat Pesanan')),
+      body: const Center(child: Text('Riwayat pesanan Anda akan muncul di sini.')),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: 2, // Sesuaikan dengan index halaman ini (index ke-2 untuk Riwayat)
         onTap: (index) {

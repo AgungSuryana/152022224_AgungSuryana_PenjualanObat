@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+// ignore: use_key_in_widget_constructors
 class BmiCalculatorPage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _BmiCalculatorPageState createState() => _BmiCalculatorPageState();
 }
 
@@ -41,67 +43,57 @@ class _BmiCalculatorPageState extends State<BmiCalculatorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('BMI Calculator')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Card(
-              color: Colors.white, // Ubah warna latar belakang Card
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: _weightController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Berat Badan (kg)'),
-                    ),
-                    TextField(
-                      controller: _heightController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Tinggi Badan (cm)'),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _calculateBmi,
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.blue, // Ubah warna teks
-                        textStyle: TextStyle(fontSize: 18),
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(title: const Text('BMI Calculator')),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 60), 
+              Card( 
+                color: Colors.white,
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _weightController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: 'Berat Badan (kg)'),
                       ),
-                      child: Text('Hitung BMI'),
-                    ),
-                    SizedBox(height: 20),
-                    Text(_result, style: TextStyle(fontSize: 24)),
-                    if (_classification.isNotEmpty)
-                      Text('Klasifikasi: $_classification', style: TextStyle(fontSize: 20)),
-                  ],
+                      TextField(
+                        controller: _heightController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: 'Tinggi Badan (cm)'),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _calculateBmi,
+                        child: const Text('Hitung BMI'),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        _result,
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                      if (_classification.isNotEmpty)
+                        Text(
+                          'Klasifikasi: $_classification',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Card(
-              color: Colors.teal[50], // Ubah warna latar belakang Card
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Classification', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
-                    Text('Underweight: Below 18.5'),
-                    Text('Normal: 18.5-24.9'),
-                    Text('Overweight: 25.0-29.9'),
-                    Text('Obesity: 30 and above'),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

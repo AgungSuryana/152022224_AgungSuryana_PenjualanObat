@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 
+// ignore: use_key_in_widget_constructors
 class ShopScreen extends StatelessWidget {
   final List<String> _products = ['Obat A', 'Obat B', 'Obat C'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Shop')),
+      appBar: AppBar(title: const Text('Shop')),
       body: ListView.builder(
         itemCount: _products.length,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(_products[index]),
             trailing: IconButton(
-              icon: Icon(Icons.add_shopping_cart),
+              icon: const Icon(Icons.add_shopping_cart),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

@@ -4,16 +4,20 @@ import 'screens/home_screen.dart';
 import 'screens/order_history_screen.dart';
 import 'screens/shop_screen.dart';
 import 'screens/calculator_screen.dart';
+import 'widgets/splash_screen2.dart';
+import 'screens/register_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+// ignore: use_key_in_widget_constructors
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aplikasi Penjualan Obat',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: _createMaterialColor(const Color(0xFF11767A)),
         hintColor: const Color(0xFFFFA500),
@@ -36,14 +40,25 @@ class MyApp extends StatelessWidget {
             backgroundColor: const Color(0xFF11767A),
           ),
         ),
+        inputDecorationTheme: const InputDecorationTheme(
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                color: Color(0xFF11767A)), // Sesuaikan dengan warna tema Anda
+          ),
+          labelStyle: TextStyle(
+            color: Color(0xFF11767A), // Sesuaikan dengan warna tema Anda
+          ),
+        ),
       ),
-      initialRoute: '/',
+      initialRoute: '/splash2',
       routes: {
+        '/splash2': (context) => const SplashScreen2(),
         '/': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
         '/home': (context) => HomeScreen(),
         '/shop': (context) => ShopScreen(),
         '/history': (context) => OrderHistoryScreen(),
-        '/calculator': (context) => CalculatorScreen(),
+        '/calculator': (context) => const CalculatorScreen(),
       },
     );
   }
@@ -63,6 +78,7 @@ class MyApp extends StatelessWidget {
     ];
     Map<int, Color> swatch = {};
 
+    // ignore: avoid_function_literals_in_foreach_calls
     strengths.forEach((strength) {
       final ds = (strength * 255).round();
       // Pastikan nilai RGB tetap berada dalam rentang yang valid (0-255)
