@@ -33,6 +33,9 @@ dependencies:
   expressions: ^0.2.2
   carousel_slider: ^5.0.0 
   flutter_native_splash: ^2.4.2
+  provider: ^6.1.2
+  flutter_rating_bar: ^4.0.0
+  flashy_flushbar: ^1.4.0
 
  
 
@@ -67,6 +70,11 @@ flutter:
     - assets/splash1.png
     - assets/splash2.png
     - assets/splash.jpg
+    - assets/images/obat_a.jpg
+    - assets/images/obat_b.jpg
+    - assets/images/obat_c.jpg
+
+
 
 
 

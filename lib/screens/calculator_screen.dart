@@ -3,6 +3,7 @@ import 'calculatorpage.dart';
 import 'bmicalculatorpage.dart';
 import 'currencyconverterpage.dart';
 import 'discountcalculatorpage.dart';
+import 'suhuscreen.dart'; // Import halaman SuhuScreen
 import '../widgets/custom_bottom_navigation_bar.dart';
 
 class CalculatorScreen extends StatelessWidget {
@@ -68,6 +69,13 @@ class CalculatorScreen extends StatelessWidget {
                   Icons.percent,
                   const DiscountCalculatorPage(),
                 ),
+                // Menambahkan akses ke halaman SuhuScreen
+                _buildCardTile(
+                  context,
+                  'Konversi Suhu',
+                  Icons.thermostat,
+                  const SuhuScreen(),
+                ),
               ],
             ),
           ),
@@ -90,7 +98,7 @@ class CalculatorScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCardTile(
+ Widget _buildCardTile(
       BuildContext context, String title, IconData icon, Widget page) {
     return Card(
       color: const Color(0xFF11767A),
@@ -113,7 +121,6 @@ class CalculatorScreen extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),
