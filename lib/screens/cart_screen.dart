@@ -1,120 +1,64 @@
 import 'package:flutter/material.dart';
 
-class CartScreen extends StatefulWidget {
+class CartScreen extends StatelessWidget {
   final List<Map<String, dynamic>> cartItems;
 
   const CartScreen({super.key, required this.cartItems});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CartScreenState createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
-  @override
   Widget build(BuildContext context) {
-    // ignore: no_leading_underscores_for_local_identifiers
-    int _calculateTotalPrice() {
-      num totalPrice = 0;
-      for (var item in widget.cartItems) {
-        totalPrice += item['price'] * item['qty'];
-      }
-      return totalPrice.toInt(); 
+    num total = 0;
+    for (var item in cartItems) {
+      // Mengkonversi hasil perkalian menjadi int
+      total += (item['price'] * item['qty']).toInt();
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Keranjang'),
+        title: const Text('Keranjang Belanja'),
       ),
-      body: widget.cartItems.isEmpty
-          ? const Center(child: Text('Keranjang Anda kosong'))
+      body: cartItems.isEmpty
+          ? const Center(
+              child: Text('Keranjang kosong. Tambahkan produk ke keranjang!'),
+            )
           : ListView.builder(
-              itemCount: widget.cartItems.length,
+              itemCount: cartItems.length,
               itemBuilder: (context, index) {
+                final item = cartItems[index];
                 return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                   child: ListTile(
-                    contentPadding: const EdgeInsets.all(8.0),
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.asset(
-                        widget.cartItems[index]['image'],
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    title: Text(
-                      widget.cartItems[index]['name'],
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      'Qty: ${widget.cartItems[index]['qty']} - Total: Rp ${widget.cartItems[index]['price'] * widget.cartItems[index]['qty']}',
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          widget.cartItems.removeAt(index);
-                        });
-                      },
-                    ),
+                    leading: Image.network(item['image']!, width: 50.0, height: 50.0, fit: BoxFit.cover),
+                    title: Text(item['name']!),
+                    subtitle: Text('Qty: ${item['qty']}'),
+                    trailing: Text('Rp ${(item['price'] * item['qty']).toInt()}'), // Konversi hasil ke int
                   ),
                 );
               },
             ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Total Harga: Rp ${_calculateTotalPrice()}',
-              style: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(
-                height: 10),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Row(
-                      children: [
-                        Icon(Icons.payment,
-                            color: Colors.white),
-                        SizedBox(
-                            width: 10),
-                        Text('Melanjutkan ke pembayaran...'),
-                      ],
-                    ),
-                    backgroundColor:
-                        Colors.green,
-                    duration:
-                        const Duration(seconds: 3),
-                    action: SnackBarAction(
-                      label: 'Batal', 
-                      onPressed: () {
-                      },
-                    ),
+      bottomNavigationBar: cartItems.isEmpty
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total: Rp $total',
+                    style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
-                );
-              },
-              // ignore: sort_child_properties_last
-              child: const Text('Lanjutkan Pembayaran'),
-              style: ElevatedButton.styleFrom(
-                minimumSize:
-                    const Size(double.infinity, 50), 
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implementasikan logika pembayaran atau tindakan lainnya
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: const Text('Fitur checkout belum tersedia')),
+                      );
+                    },
+                    child: const Text('Checkout'),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

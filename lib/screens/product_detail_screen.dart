@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'cart_screen.dart'; // Pastikan Anda memiliki CartScreen yang sudah diimpor
+import 'cart_screen.dart'; // Pastikan Anda sudah mengimpor CartScreen yang sudah diimpor
 import 'package:flutter_rating_bar/flutter_rating_bar.dart'; // Package untuk menampilkan rating
 
 class ProductDetailScreen extends StatefulWidget {
-  final Map<String, String> product;
+  final Map<String, dynamic> product; // Update type to dynamic to handle multiple types
   final Function(Map<String, dynamic>) onAddToCart;
 
   const ProductDetailScreen({
@@ -13,32 +13,15 @@ class ProductDetailScreen extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProductDetailScreenState createState() => _ProductDetailScreenState();
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  final List<Map<String, dynamic>> _cartItems = [];
   double _rating = 4.0; // Rating awal contoh
 
   void _addItemToCart() {
-    setState(() {
-      final existingItemIndex = _cartItems.indexWhere(
-        (item) => item['name'] == widget.product['name'],
-      );
-
-      if (existingItemIndex != -1) {
-        _cartItems[existingItemIndex]['qty'] += 1;
-      } else {
-        _cartItems.add({
-          'name': widget.product['name']!,
-          'image': widget.product['image']!,
-          'description': widget.product['description']!,
-          'price': int.parse(widget.product['price']!.replaceAll(RegExp(r'[^0-9]'), '')),
-          'qty': 1,
-        });
-      }
-    });
+    // Calling onAddToCart passed from ShopScreen to add product to cart
+    widget.onAddToCart(widget.product);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${widget.product['name']} ditambahkan ke keranjang')),
@@ -50,12 +33,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Image.asset(
-            widget.product['image']!,
+          // Image Header
+          Image.network(
+            widget.product['image'], // Use Image.network if it's a URL
             height: 350,
             width: double.infinity,
             fit: BoxFit.cover,
           ),
+          // Back Button
           Positioned(
             top: 40.0,
             left: 16.0,
@@ -73,6 +58,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
           ),
+          // Cart Button
           Positioned(
             top: 40.0,
             right: 16.0,
@@ -85,30 +71,35 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: IconButton(
                 icon: const Icon(Icons.shopping_cart, color: Colors.white),
                 onPressed: () {
+                  // Navigate to the CartScreen with actual cartItems
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CartScreen(cartItems: _cartItems),
+                      builder: (context) => CartScreen(
+                          cartItems: []), // Pass actual cartItems here
                     ),
                   );
                 },
               ),
             ),
           ),
+          // Product Info and UI
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 350),
+                // Product Name
                 Text(
-                  widget.product['name']!,
+                  widget.product['name'] ?? 'Nama Produk Tidak Tersedia',
                   style: const TextStyle(
                     fontSize: 32.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
+                // Rating
                 RatingBar.builder(
                   initialRating: _rating,
                   minRating: 1,
@@ -126,13 +117,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   },
                 ),
                 const SizedBox(height: 10),
+                // Description
                 Text(
-                  widget.product['description']!,
+                  widget.product['description'] ?? 'Deskripsi tidak tersedia.',
                   style: const TextStyle(fontSize: 16.0),
                 ),
                 const SizedBox(height: 20),
+                // Price
                 Text(
-                  ' ${widget.product['price']}',
+                  'Rp ${widget.product['price']}',
                   style: const TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.bold,
@@ -144,6 +137,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ],
       ),
+      // Add to Cart Button
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
