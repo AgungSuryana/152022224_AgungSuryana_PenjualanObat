@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http; // Pastikan menambahkan dependency http
 
-// ignore: use_key_in_widget_constructors
 class RegisterScreen extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProviderStateMixin {
+class _RegisterScreenState extends State<RegisterScreen>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
-  late Animation<Color?> _textColorAnimation; 
+  late Animation<Color?> _textColorAnimation;
 
   @override
   void initState() {
@@ -24,25 +26,51 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
     _controller = AnimationController(
       duration: const Duration(seconds: 5),
       vsync: this,
-    )..repeat(reverse: true); 
+    )..repeat(reverse: true);
 
     // Tween untuk animasi pergantian warna latar belakang
     _colorAnimation = ColorTween(
-      begin: const Color(0xFF11767A), 
-      end: const Color.fromARGB(255, 255, 255, 255),   
+      begin: const Color(0xFF11767A),
+      end: const Color.fromARGB(255, 255, 255, 255),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     // Tween untuk animasi pergantian warna teks
     _textColorAnimation = ColorTween(
       begin: Colors.white, // Warna awal teks
-      end: const Color(0xFF11767A),  
+      end: const Color(0xFF11767A),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
   void dispose() {
-    _controller.dispose(); 
+    _controller.dispose();
     super.dispose();
+  }
+
+  // Fungsi untuk mengirim data registrasi ke backend
+  Future<void> registerUser(String username, String password) async {
+    final response = await http.post(
+      Uri.parse(
+          'http://10.0.2.2:3000/register'), // Ganti dengan URL backend Anda
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'username': username,
+        'password': password,
+        'role': 'user', // Tambahkan role otomatis sebagai 'user'
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pendaftaran berhasil!')),
+      );
+      Navigator.pop(
+          context); // Pindah ke halaman login setelah pendaftaran berhasil
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pendaftaran gagal!')),
+      );
+    }
   }
 
   @override
@@ -52,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
         animation: _controller,
         builder: (context, child) {
           return Container(
-            color: _colorAnimation.value, // Menampilkan perubahan warna latar belakang
+            color: _colorAnimation.value,
             child: Center(
               child: SingleChildScrollView(
                 child: Column(
@@ -65,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                         style: TextStyle(
                           fontSize: 35.0,
                           fontWeight: FontWeight.bold,
-                          color: _textColorAnimation.value, // Menggunakan animasi warna teks
+                          color: _textColorAnimation.value,
                         ),
                       ),
                     ),
@@ -83,31 +111,37 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           children: [
                             TextField(
                               controller: _usernameController,
-                              decoration: const InputDecoration(labelText: 'Username'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Username'),
                             ),
                             TextField(
                               controller: _passwordController,
-                              decoration: const InputDecoration(labelText: 'Password'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Password'),
                               obscureText: true,
                             ),
                             TextField(
                               controller: _confirmPasswordController,
-                              decoration: const InputDecoration(labelText: 'Konfirmasi Password'),
+                              decoration: const InputDecoration(
+                                  labelText: 'Konfirmasi Password'),
                               obscureText: true,
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {
-                                if (_passwordController.text == _confirmPasswordController.text &&
+                                if (_passwordController.text ==
+                                        _confirmPasswordController.text &&
                                     _passwordController.text.isNotEmpty) {
-                                  // Proses pendaftaran
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Pendaftaran berhasil!')),
+                                  // Proses pendaftaran ke API
+                                  registerUser(
+                                    _usernameController.text,
+                                    _passwordController.text,
                                   );
-                                  Navigator.pop(context);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Password tidak cocok atau kosong!')),
+                                    const SnackBar(
+                                        content: Text(
+                                            'Password tidak cocok atau kosong!')),
                                   );
                                 }
                               },
